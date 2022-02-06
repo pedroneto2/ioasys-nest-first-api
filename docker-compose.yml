@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  ioasysnestfirstapi:
+    image: ioasysnestfirstapi
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
