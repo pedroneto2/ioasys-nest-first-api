@@ -1,81 +1,118 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+## como "DOCKERIZAR" o app
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+- Instale o docker, no meu caso estou utilizando windows. Basta baixar e instalar: https://www.docker.com/products/docker-desktop
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### RODAR LOCALMENTE
+
+Para rodar o app localmente é necessário "setar" a variavel de ambient utilizada para PORTA e EXPÔ-LA no dockerfile e dockercompose:
+
+No arquivo Dockerfile adicione
+
+```bash
+$ ENV PORT = <numero-da-porta>
+```
+
+No arquivo docker-compose.yml adicione em services: > ioasysnestfirstapi: >
+
+```bash
+$ ports:
+$   - <porta-do-container>:<porta-da-sua-maquina>
+$ enviroment:
+$   - PORT: <porta-do-container>
+```
+
+OBS: Eu utilizei a mesma porta para tudo, por exemplo: 3000
+
+agora execute o comando
+
+```bash
+$ docker-compose up
+```
+
+obs: se não der certo, será necessário executar este comando antes do comando anterior:
+
+```bash
+$ docker build -t <tag-de-sua-escolha>
+```
+
+
+
+### COMO FAZER O DEPLOY NO HEROKU
+
+- baixe e instale o heroku cli: https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up
+
+faça o clone desse repositório sem mudar nenhum arquivo.
+
+OBS: Não expoem-se portas com o Dockerfile ou docker-compse.yml para deploy no heroku, pois o próprio heroku vai fazer isso
+
+Só é necessário indicar uma porta em main.ts como variavel de ambiente para o heroku utilizar, no caso: process.env.PORT
+
+e no arquivo app.module.ts é preciso importar a dependencia para lidar com variaveis de ambiente. Adicione:
+
+```bash
+$ import { ConfigModule } from '@nestjs/config';
+```
+
+e em imports, no @Module, adicione
+
+```bash
+$ ConfigModule.forRoot()
+```
+
+e instale a dependencia @nestjs/config:
+
+```bash
+$ npm install @nestjs/config
+```
+
+agora, no terminal na raiz do diretorio do projeto, faça login no heroku:
+
+```bash
+$ heroku login
+```
+
+Pressione qualquer tecla para abrir o browser, faça login pelo browser e pronto, você estará logado no terminal.
+
+faça login no registro dos containeres do heroku:
+
+```bash
+$ heroku container:login
+```
+
+adicione seu projeto
+
+```bash
+$ heroku container:push web
+```
+
+publique-o
+
+```bash
+$ heroku container:push web
+```
+
+e agora, o abra
+
+```bash
+$ heroku open
+```
 
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+## Instalação
 
 ```bash
 $ npm install
 ```
 
-## Running the app
+## Rodando o APP com DOCKER
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ docker-compose up
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
 Nest is [MIT licensed](LICENSE).
-=======
-# ioasys-nest-first-api
->>>>>>> 43ea104ed25484dbdeaa9a6c0e837b181044ff6f
-=======
-# ioasys-nest-first-api
->>>>>>> 43ea104ed25484dbdeaa9a6c0e837b181044ff6f
